@@ -2,7 +2,7 @@ const textClean = ($t) => $t.text().replace(/ |\r|\n/ig, '');
 
 let resultObj = {};
 
-let $as = $('body')
+$('body')
     .find('#js_content')
     .find('section[style="max-width: 100%;display: inline-block;width: 677px;vertical-align: top;background-color: rgb(249, 249, 249);border-width: 0px;border-style: none;border-color: rgb(51, 51, 51);border-radius: 5px;overflow: hidden;box-sizing: border-box !important;overflow-wrap: break-word !important;"]')
     .each((index, e) => {
