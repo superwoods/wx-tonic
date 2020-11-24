@@ -413,6 +413,9 @@ gulp.task('autowatch', function () {
     // gulp.watch('scss/include/*.scss', ['scss']);
 
     gulp.watch('*.html');
+    gulp.watch('local-index.js');
+    gulp.watch('index.js');
+
 
 });
 
