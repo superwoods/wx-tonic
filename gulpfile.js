@@ -389,29 +389,33 @@ gulp.task('styl-tools-helper-grabber', function () {
 
 // watch
 gulp.task('autowatch', function () {
-    gulp.watch([
-        'pug/cut.pug',
-        'pug/inc/*.pug'
-    ], [
-        'pug-cut',
-        'pug-inc'
-    ]);
-    // gulp.watch('pug/*.pug', ['pug-ghgy']);
+    // gulp.watch([
+    //     'pug/cut.pug',
+    //     'pug/inc/*.pug'
+    // ], [
+    //     'pug-cut',
+    //     'pug-inc'
+    // ]);
+    // // gulp.watch('pug/*.pug', ['pug-ghgy']);
 
-    gulp.watch('pug/*.pug', [
-        'pug-xat-homepage',
-        // 'pug-ghgy'
-    ]);
+    // gulp.watch('pug/*.pug', [
+    //     'pug-xat-homepage',
+    //     // 'pug-ghgy'
+    // ]);
 
-    gulp.watch('js/*.js', jsCompileTasks);
-    gulp.watch('styl/*.styl', ['styl']);
-    gulp.watch(incStyl, ['styl-inc']);
+    // gulp.watch('js/*.js', jsCompileTasks);
+    // gulp.watch('styl/*.styl', ['styl']);
+    // gulp.watch(incStyl, ['styl-inc']);
 
     // gulp.watch('tools/helper-grabber/*.styl', ['styl-tools-helper-grabber']);
 
     // gulp.watch('scss/*.scss', ['scss']);
     // gulp.watch('scss/include/*.scss', ['scss']);
+
+    gulp.watch('*.html');
+
 });
+
 
 
 gulp.task('autowatch-css-common', function () {
