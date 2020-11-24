@@ -1,58 +1,67 @@
-// const fs = require("fs");
+const fs = require("fs");
 const jsdom = require('jsdom');
 const jQuery = require("jquery");
+
+
 // const dateFormat = require('dateformat');
 
 // console.log('__dirname : ' + __dirname);
 
 // let files = __dirname + '/index.html';
 
-// let files = 'https://mp.weixin.qq.com/s?__biz=MzI0Mjg5MDEwMw==&amp;mid=2247484516&amp;amp;idx=1&amp;amp;sn=20d1aa9208fa7a125fedbde79154d41b&amp;source=41&amp;scene=21#wechat_redirect';
+/**
+let files = 'https://mp.weixin.qq.com/s?__biz=MzI0Mjg5MDEwMw==&amp;mid=2247484516&amp;amp;idx=1&amp;amp;sn=20d1aa9208fa7a125fedbde79154d41b&amp;source=41&amp;scene=21#wechat_redirect';
 
-// fs.readFile(files, 'utf-8', function (err, callbackData) {
-//     if (err) {
-//         console.error('/lib/index.js readFile err:\n', err);
-//         return;
-//     }
+fs.readFile(files, 'utf-8', function (err, callbackData) {
+    if (err) {
+        console.error('/lib/index.js readFile err:\n', err);
+        return;
+    }
 
-//     jsdom.env(
-//         callbackData,
-//         (err, window) => {
-//             if (err) {
-//                 console.error('jsdom err:\n', err);
-//                 return;
-//             }
-//             const $ = jQuery(window);
+    jsdom.env(
+        callbackData,
+        (err, window) => {
+            if (err) {
+                console.error('jsdom err:\n', err);
+                return;
+            }
+            const $ = jQuery(window);
 
-//             let $spans = $('body').find('[style="max-width: 100%;font-size: 14px;letter-spacing: 0.5px;font-family: Optima-Regular, PingFangTC-light;box-sizing: border-box !important;overflow-wrap: break-word !important;"]');
+            let $spans = $('body').find('[style="max-width: 100%;font-size: 14px;letter-spacing: 0.5px;font-family: Optima-Regular, PingFangTC-light;box-sizing: border-box !important;overflow-wrap: break-word !important;"]');
 
-//             console.log('$spans: ', $spans.length);
+            console.log('$spans: ', $spans.length);
 
-//             let resultObj = {};
+            let resultObj = {};
 
-//             $spans.each((i, e) => {
-//                 let $e = $(e);
-//                 // if (i == 200) console.log($e.text());
-//                 if ($.trim($e.text())) {
-//                     resultObj[$e.text()] = {
-//                         'index': i,
-//                         'lists': {
+            $spans.each((i, e) => {
+                let $e = $(e);
+                // if (i == 200) console.log($e.text());
+                if ($.trim($e.text())) {
+                    resultObj[$e.text()] = {
+                        'index': i,
+                        'lists': {
 
-//                         }
-//                     };
-//                 }
-//             });
+                        }
+                    };
+                }
+            });
 
-//             console.log(resultObj);
+            console.log(resultObj);
 
-//         }
-//     );
-// });
+        }
+    );
+});
+ */
+
+
 
 let resultObj = {};
+const textClean = ($t) => $t.text().replace(/\r|\n|\s|（|、|case|demo|）/ig, '');
+const textLightClean = ($t) => $t.text().replace(/\r|\n|\s|（|、|）/ig, '');
 
 jsdom.env(
-    'https://mp.weixin.qq.com/s/gHnDoiVCZ_3PkAJfWbfC8A',
+    'https://mp.weixin.qq.com/s/4IfCETREWz8kZX-S8fvxew',
+    // 'https://mp.weixin.qq.com/s/gHnDoiVCZ_3PkAJfWbfC8A',
     ["http://code.jquery.com/jquery.js"],
     (err, window) => {
         if (err) {
@@ -62,89 +71,62 @@ jsdom.env(
 
         const $ = jQuery(window);
 
-        // let $js_content = $('body').find('#js_content');
-        let $as = $('body')
+        $('body')
             .find('#js_content')
             .find('section[style="max-width: 100%;display: inline-block;width: 677px;vertical-align: top;background-color: rgb(249, 249, 249);border-width: 0px;border-style: none;border-color: rgb(51, 51, 51);border-radius: 5px;overflow: hidden;box-sizing: border-box !important;overflow-wrap: break-word !important;"]')
-            .find('a');
+            .each((i1, e) => {
+                const $e = $(e);
+                const $children = $e.children('section');
 
+                let name1 = textClean($children.eq(1));
 
+                resultObj[i1] = {
+                    'name': name1,
+                    'child': {}
+                };
 
-        $as.each((i, e) => {
-            //     const index = i;
-            const $e = $(e);
-            // console.log(i, $e.parent('span').text(), $e.attr('href'));
-            console.log($as.eq(i).end().find('p'));
+                $children.each((i2, e2) => {
+                    const $e2 = $(e2);
+                    let name2 = textClean($e2.children('p'));
 
+                    if (name2) {
+                        resultObj[i1].child[i2] = {
+                            'name': name2,
+                            'child': []
+                        };
 
-            //     const $in = $e.children('section[style="max-width: 100%;box-sizing: border-box !important;overflow-wrap: break-word !important;"]');
+                        $e2.children('section')
+                            .each((i3, e3) => {
+                                const $e3 = $(e3);
 
-            //     $in.each((i, e) => {
-            //         const $e = $(e);
-            //         if (i == 0) {
+                                $e3.children('section')
+                                    .each((i4, e4) => {
+                                        const $e4 = $(e4);
+                                        // console.log($e4);
+                                        let name = textClean($e4);
 
-            //         } else if (i == 1) {
-            //             resultObj[index] = {
-            //                 'name': $e.text(),
-            //                 'child': {},
-            //             };
-            //         } else {
-            //             let text = $e.children('p').find('strong').text();
+                                        resultObj[i1].child[i2].child.push({
+                                            'name': name
+                                        });
 
-            //             resultObj[index].child[text] = i;
-            //         }
-            //         // resultObj[$e.text()].child[$e.children('p').find('strong').text()] = $e.children('section').find('a').attr('href');
+                                        let $a = $e4.find('a');
 
-            //     });
-            //     // if ($e.children('p').length == 1) {
-            //     //     console.log(i);
-            //     // }
-        });
+                                        if ($a.length > 0) {
+                                            resultObj[i1].child[i2].child[i4].link = [];
+                                            $a.each((i, e) => {
+                                                resultObj[i1].child[i2].child[i4].link.push({
+                                                    'name': textLightClean($(e)),
+                                                    'href': $(e).attr('href')
+                                                });
+                                            });
+                                        }
+                                    });
+                            });
+                    }
+                });
+            });
 
-
-
-
-        // js_content = js_content.replace(/ style="([\s\S]*?)?"/ig, '');
-
-        // // console.log($(js_content).find('a[target="_blank"]').attr('href') + '\n');
-
-        // $(js_content).find('a[target="_blank"]').each((i, e) => {
-        //     console.log(i + $(e).attr('href') + '\n');
-
-        //     $(e).father('span')
-
-        // });
-
-        // $sections.each((i, e) => {
-        //     const $e = $(e);
-        //     const $in = $e.find('section');
-
-        //     if ($in.length > 0) {
-        //         if ($in.find('p').length == 2 && $in.find('strong').length == 1) {
-        //             console.log($in.find('strong').text());
-        //             console.log($in.find('p').text());
-        //         }
-        //     }
-        // });
-
-
-
-
-        // $spans.each((i, e) => {
-        //     let $e = $(e);
-        //     let text = $.trim($e.text());
-
-        //     if (text !== '......') {
-        //         resultObj[$e.text()] = {
-        //             'index': i,
-        //             'lists': {
-
-        //             }
-        //         };
-        //     }
-        // });
-
-        console.log(resultObj);
+        console.log(JSON.stringify(resultObj));
 
     }
 );

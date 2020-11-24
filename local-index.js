@@ -1,56 +1,57 @@
-const textClean = ($t) => $t.text().replace(/ |\r|\n/ig, '');
+// const textClean = ($t) => $t.text().replace(/\r|\n|\s|（|、|case|demo|）/ig, '');
+// const textLightClean = ($t) => $t.text().replace(/\r|\n|\s|（|、|）/ig, '');
+
+const textClean = ($t) => $t.text().replace(/\r|\n|\s/ig, '');
+const textLightClean = ($t) => $t.text().replace(/\r|\n|\s/ig, '');
 
 let resultObj = {};
 
 $('body')
     .find('#js_content')
     .find('section[style="max-width: 100%;display: inline-block;width: 677px;vertical-align: top;background-color: rgb(249, 249, 249);border-width: 0px;border-style: none;border-color: rgb(51, 51, 51);border-radius: 5px;overflow: hidden;box-sizing: border-box !important;overflow-wrap: break-word !important;"]')
-    .each((index, e) => {
+    .each((i1, e) => {
         const $e = $(e);
         const $children = $e.children('section');
 
         let name1 = textClean($children.eq(1));
 
-        resultObj[index] = {
+        resultObj[i1] = {
             'name': name1,
             'child': {}
         };
 
-        $children.each((_i, _e) => {
-            const $_e = $(_e);
-            // console.log($_e);
-            let name2 = textClean($_e.children('p'));
-            if (name2) {
+        $children.each((i2, e2) => {
+            const $e2 = $(e2);
+            let name2 = textClean($e2.children('p'));
+            i2 = i2 - 2;
 
-                resultObj[index].child[_i] = {
-                    'name2': name2,
-                    'child2': []
+            if (name2) {
+                resultObj[i1].child[i2] = {
+                    'name': name2,
+                    'child': []
                 };
 
-                $_e.children('section')
-                    .each((__i, __e) => {
-                        const $__e = $(__e);
+                $e2.children('section')
+                    .each((i3, e3) => {
+                        const $e3 = $(e3);
 
-                        $__e.children('section')
-                            .each((___i, ___e) => {
+                        $e3.children('section')
+                            .each((i4, e4) => {
+                                const $e4 = $(e4);
+                                // console.log($e4);
+                                let name = textClean($e4);
 
-                                const $___e = $(___e);
-                                // console.log($___e);
-
-                                let name3 = textClean($___e);
-
-                                resultObj[index].child[_i].child2.push({
-                                    'name3': name3
+                                resultObj[i1].child[i2].child.push({
+                                    'name': name
                                 });
 
-                                let $a = $___e.find('a');
-                                if ($a.length == 1) {
-                                    resultObj[index].child[_i].child2[___i].href = $a.attr('href');
-                                } else if ($a.length > 1) {
-                                    resultObj[index].child[_i].child2[___i].href = [];
+                                let $a = $e4.find('a');
+
+                                if ($a.length > 0) {
+                                    resultObj[i1].child[i2].child[i4].link = [];
                                     $a.each((i, e) => {
-                                        resultObj[index].child[_i].child2[___i].href.push({
-                                            'name': textClean($(e)),
+                                        resultObj[i1].child[i2].child[i4].link.push({
+                                            'name': textLightClean($(e)),
                                             'href': $(e).attr('href')
                                         });
                                     });
