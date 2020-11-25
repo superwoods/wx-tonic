@@ -1,8 +1,6 @@
 const fs = require("fs");
 const jsdom = require('jsdom');
 const jQuery = require("jquery");
-
-
 // const dateFormat = require('dateformat');
 
 // console.log('__dirname : ' + __dirname);
@@ -56,8 +54,12 @@ fs.readFile(files, 'utf-8', function (err, callbackData) {
 
 
 let resultObj = {};
-const textClean = ($t) => $t.text().replace(/\r|\n|\s|（|、|case|demo|）/ig, '');
-const textLightClean = ($t) => $t.text().replace(/\r|\n|\s|（|、|）/ig, '');
+// const textClean = ($t) => $t.text().replace(/\r|\n|\s|（|、|case|demo|）/ig, '');
+// const textLightClean = ($t) => $t.text().replace(/\r|\n|\s|（|、|）/ig, '');
+
+
+
+
 
 jsdom.env(
     'https://mp.weixin.qq.com/s/4IfCETREWz8kZX-S8fvxew',
