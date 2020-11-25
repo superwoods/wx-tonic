@@ -34,31 +34,55 @@ $('body')
                 $e2.children('section').each((i3, e3) => {
                     const $e3 = $(e3);
                     // console.log($e3);
+                    let mark_i4 = 0;
 
                     $e3.children('section').each((i4, e4) => {
                         const $e4 = $(e4);
+                        mark_i4 = i4;
                         // console.log('i4:', i4);
                         // $e4.addClass('is-item' + i4);
                         let $a = $e4.find('a');
-                        resultObj[i1].child[i2].child.push({ 'i4': i4 });
+                        resultObj[i1].child[i2].child.push({});
 
                         if ($a.length <= 0) {
                             let name = textClean($e4);
-                            resultObj[i1].child[i2].child[i4].name3 = name;
-                        } else if ($a.length > 0) {
-                            // console.log($a.length > 0 == false);
+                            resultObj[i1].child[i2].child[mark_i4].name3 = name;
 
+                        } else if ($a.length <= 1) {
                             let name = textClean($a.closest('p'));
-                            resultObj[i1].child[i2].child[i4].name3 = name;
-                            resultObj[i1].child[i2].child[i4].href = $a.attr('href');
+                            resultObj[i1].child[i2].child[mark_i4].name3 = name;
+                            resultObj[i1].child[i2].child[mark_i4].href = $a.attr('href');
                         } else {
-                            // $a.each((i, e) => {
-                            //     resultObj[i1].child[i2].child[i4].push({
-                            //         'name3': name,
-                            //         'href': $(e).attr('href'),
-                            //         'a': textLightClean($(e)),
-                            //     });
-                            // });
+                            resultObj[i1].child[i2].child[mark_i4].more = true;
+                            resultObj[i1].child[i2].child[mark_i4].href = [];
+                            $a.each((i5, e5) => {
+                                const $e5 = $(e5);
+
+
+
+                                let name5 = textClean($e5.closest('p'));
+
+                                if (name5 == '') {
+                                    // 如果 a 外层没有p，那么继续外层 section，获取其中文字作为 name5
+                                    name5 = textClean($e5.closest('section'));
+                                }
+
+                                if (i1 == 3) {
+                                    if ($e5.closest('p').find('a').length > 1) {
+                                        console.log($e5.closest('p').find('a').length);
+
+
+                                    } else {
+                                        resultObj[i1].child[i2].child[mark_i4].name3 = name5;
+                                        resultObj[i1].child[i2].child[mark_i4].href.push({
+                                            a: textClean($e5),
+                                            href: $e5.attr('href')
+                                        });
+                                    }
+                                }
+
+
+                            });
                         }
 
 
@@ -84,5 +108,7 @@ $('body')
 
 // console.log(resultObj);
 // console.log(JSON.stringify(resultObj[3].child[0].child[1]).replace(/{"name"/ig, '{\n "name"').replace(/","href"/ig, '",\n "href"').replace(/},{/ig, '\n},{'));
-// console.log(resultObj[3].name + '\n', '  \\-> ' + resultObj[3].child[0].name + '\n', '     \\-> ', resultObj[3].child[0].child);
-console.log(resultObj[7].name + '\n', '  \\-> ', resultObj[7].child);
+console.log(resultObj[3].name + '\n', '  \\-> ' + resultObj[3].child[0].name + '\n', '     \\-> ', resultObj[3].child[0]);
+// console.log(resultObj[7].name + '\n', '  \\-> ', resultObj[7].child);
+
+// console.log(resultObj[3].name + '\n', '  \\-> ' + resultObj[3].child[0].name + '\n', '     \\-> ', resultObj[3].child);
