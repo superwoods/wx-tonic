@@ -31,36 +31,58 @@ $('body')
                     'child': []
                 };
 
-                $e2.children('section')
-                    .each((i3, e3) => {
-                        const $e3 = $(e3);
+                $e2.children('section').each((i3, e3) => {
+                    const $e3 = $(e3);
+                    // console.log($e3);
 
-                        $e3.children('section')
-                            .each((i4, e4) => {
-                                const $e4 = $(e4);
-                                // console.log($e4);
-                                let name = textClean($e4);
+                    $e3.children('section').each((i4, e4) => {
+                        const $e4 = $(e4);
+                        // console.log('i4:', i4);
+                        // $e4.addClass('is-item' + i4);
+                        let $a = $e4.find('a');
+                        resultObj[i1].child[i2].child.push({ 'i4': i4 });
 
-                                resultObj[i1].child[i2].child.push({
-                                    'name': name
-                                });
+                        if ($a.length <= 0) {
+                            let name = textClean($e4);
+                            resultObj[i1].child[i2].child[i4].name3 = name;
+                        } else if ($a.length > 0) {
+                            // console.log($a.length > 0 == false);
 
-                                let $a = $e4.find('a');
+                            let name = textClean($a.closest('p'));
+                            resultObj[i1].child[i2].child[i4].name3 = name;
+                            resultObj[i1].child[i2].child[i4].href = $a.attr('href');
+                        } else {
+                            // $a.each((i, e) => {
+                            //     resultObj[i1].child[i2].child[i4].push({
+                            //         'name3': name,
+                            //         'href': $(e).attr('href'),
+                            //         'a': textLightClean($(e)),
+                            //     });
+                            // });
+                        }
 
-                                if ($a.length > 0) {
-                                    resultObj[i1].child[i2].child[i4].link = [];
-                                    $a.each((i, e) => {
-                                        resultObj[i1].child[i2].child[i4].link.push({
-                                            'name': textLightClean($(e)),
-                                            'href': $(e).attr('href')
-                                        });
-                                    });
-                                }
-                            });
+
+
+                        // let $a = $e4.find('a');
+
+                        // if ($a.length > 0) {
+                        //     resultObj[i1].child[i2].child[i4].link = [];
+                        //     $a.each((i, e) => {
+                        //         resultObj[i1].child[i2].child[i4].link.push({
+                        //             'name4': textLightClean($(e)),
+                        //             'href': $(e).attr('href')
+                        //         });
+                        //     });
+                        // }
                     });
+
+                });
             }
         });
     });
 
 
-console.log(resultObj);
+// console.log(resultObj);
+// console.log(JSON.stringify(resultObj[3].child[0].child[1]).replace(/{"name"/ig, '{\n "name"').replace(/","href"/ig, '",\n "href"').replace(/},{/ig, '\n},{'));
+// console.log(resultObj[3].name + '\n', '  \\-> ' + resultObj[3].child[0].name + '\n', '     \\-> ', resultObj[3].child[0].child);
+console.log(resultObj[7].name + '\n', '  \\-> ', resultObj[7].child);

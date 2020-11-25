@@ -412,9 +412,15 @@ gulp.task('autowatch', function () {
     // gulp.watch('scss/*.scss', ['scss']);
     // gulp.watch('scss/include/*.scss', ['scss']);
 
-    gulp.watch('*.html');
-    gulp.watch('local-index.js');
-    gulp.watch('index.js');
+    gulp.watch('*.html', function () {
+        browsersync.reload();
+    });
+    gulp.watch('local-index.js', function () {
+        browsersync.reload();
+    });
+    gulp.watch('index.js', function () {
+        browsersync.reload();
+    });
 
 
 });
