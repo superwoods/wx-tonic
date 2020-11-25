@@ -3,6 +3,7 @@ const jsdom = require('jsdom');
 const jQuery = require("jquery");
 const mkdirp = require('mkdirp');
 const https = require('https');
+const http = require('http');
 
 // 创建目录
 const mkdir = (dir) => {
@@ -21,13 +22,15 @@ const writeTemplate = ({ dist, html }) => {
             console.error('writeTemplate err:', err);
             return;
         }
-        // console.log('\nwriteTemplate: \n', html);
         console.log('\n   dist:', dist);
     });
 };
 
-const saveImg = ({ src, dist }) => {
+const saveImgHttps = ({ src, dist }) => {
     if (src) {
+
+        console.log(src);
+
         https.get(src, function (res) {
             res.setEncoding('binary');//二进制（binary）
             var imageData = '';
@@ -38,14 +41,41 @@ const saveImg = ({ src, dist }) => {
                 .on('end', function () {//加载完毕保存图片
                     fs.writeFile(dist, imageData, 'binary', function (err) {//以二进制格式保存
                         if (err) throw err;
-                        console.log('saveImg ==> file saved');
+                        console.log('saved:', dist);
+                        console.log('saved:', src);
                     });
                 });
         }).on('error', function (e) {
-            console.log("saveImg ==> Got error: " + e.message);
+            console.log("saveImg Got error: ", e.message, src);
         });
     } else {
-        console.log('saveImg ==> need config!!!', src);
+        console.log('saveImg need config!!!', src);
+    }
+};
+
+
+const saveImgHttp = ({ src, dist }) => {
+    if (src) {
+        console.log('http:', src);
+        http.get(src, function (res) {
+            res.setEncoding('binary');//二进制（binary）
+            var imageData = '';
+            res
+                .on('data', function (data) {//图片加载到内存变量
+                    imageData += data;
+                })
+                .on('end', function () {//加载完毕保存图片
+                    fs.writeFile(dist, imageData, 'binary', function (err) {//以二进制格式保存
+                        if (err) throw err;
+                        console.log('saved:', dist);
+                        console.log('saved:', src);
+                    });
+                });
+        }).on('error', function (e) {
+            console.log("saveImg Got error: ", e.message, src);
+        });
+    } else {
+        console.log('saveImg need config!!!', src);
     }
 };
 
@@ -84,23 +114,42 @@ const catchCase = ({ href, dist, dir, i }) => {
             let imgIndex = 0;
 
             js_contentHTML = js_contentHTML.replace(/(&quot;|")(http(s)?:\/\/)([\s\S]*?)?(&quot;|")/gim, function (...e) {
-                if (e[4] && /www\.w3\.org/i.test(e[4]) == false) {
-                    imgIndex++;
+                const type = e[4].split('wx_fmt=')[1] || 'png';
 
-                    const imgSrc = e[2] + e[4];
+                console.log('type:', type);
+                console.log('e[0]:', e[0]);
+                console.log('e[2]:', /https/i.test(e[2]), e[2]);
+                console.log('e[4]:', e[4].length);
+                console.log('   3:', /www\.w3\.org/i.test(e[4]) == false, '\n----\n');
+                // console.log('   e:', e[2]);
 
-                    saveImg({
-                        src: imgSrc,
-                        dist: `${dir}/img/jpe${imgIndex}.jpeg`
-                    });
+                if (type && e[4].length > 0 && /www\.w3\.org/i.test(e[4]) == false) {
+                    if (/https/i.test(e[2])) {
+                        // console.log("e[2] == 'https://':", e[2] == 'https://');
+                        imgIndex++;
+                        saveImgHttps({
+                            src: e[2] + e[4],
+                            dist: `${dir}/img/img${imgIndex}.` + type
+                        });
 
-                    return `./img/jpe${imgIndex}.jpeg`;
+                        return `./img/img${imgIndex}.` + type;
+
+                    } else {
+                        imgIndex++;
+                        saveImgHttp({
+                            src: e[2] + e[4],
+                            dist: `${dir}/img/img${imgIndex}.` + type
+                        });
+                        return `./img/img${imgIndex}.` + type;
+                    }
+                } else {
+                    return e[0];
                 }
             });
 
-            // console.log('js_contentHTML:', js_contentHTML);
+            console.log('js_contentHTML:', js_contentHTML);
 
-            writeTemplate({
+            writeTemplate({ // 写入 case
                 dist: dist,
                 html: `
                     <!DOCTYPE html>
@@ -111,6 +160,7 @@ const catchCase = ({ href, dist, dir, i }) => {
                             </title>
                         </head>
                         <body>
+                            <a href="${href}" target="_blank">原地址</a>
                             <h2>
                                 ${$('#activity-name').text()}
                             </h2>
@@ -163,7 +213,7 @@ const jsdomFn = (targetArray) => {
                         .attr('href', `./case${i}/index.html`)
                         .attr('target', '_self');
 
-                    if (i < 2) {
+                    if (i == 4) { // is-dev: max = 2
                         catchCase({
                             href: href,
                             dist: `${file1}/case${i}/index.html`,
@@ -190,7 +240,7 @@ const jsdomFn = (targetArray) => {
                                 ${$('#activity-name').text()}
                             </h2>
                             <div id="js_content">
-                            ${$('#js_content').html()}
+                                ${$('#js_content').html()}
                             </div>
                         </body>
                     </html>

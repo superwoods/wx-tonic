@@ -188,7 +188,8 @@ gulp.task('browsersync', function () {
     browsersync
         .init(_files, {
             server: {
-                baseDir: './src/'
+                baseDir: './src/',
+                https: true,
             },
             notify: true,
         });
