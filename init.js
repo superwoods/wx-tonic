@@ -65,7 +65,9 @@ const targetArray = [
 const jsdomFn = (targetArray) => {
 
     targetArray.map((src, i) => {
-        console.log(src, i);
+        // console.log(src, i);
+        let file1 = `/${i}`;
+        console.log('file1:', file1);
 
         jsdom.env(
             src,
@@ -77,6 +79,28 @@ const jsdomFn = (targetArray) => {
                 }
 
                 const $ = jQuery(window);
+                let dom = '';
+
+
+                const $script = $('html').find('script');
+                $script.remove();
+
+                const $a = $('#js_content').find('a');
+
+                // console.log($a.length);
+
+                $a.each((i, e) => {
+                    const $e = $(e);
+                    $e
+                        .addClass('is-changed')
+                        .attr('data-href', $e.attr('href'))
+                        .attr('href', `${file1}/case${i}/case${i}.html`)
+                        .attr('target', '_self');
+                });
+
+
+                console.log($('html').prop('outerHTML'));
+
 
                 // let $spans = $('html').find('svg');
 
