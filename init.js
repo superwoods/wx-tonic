@@ -2,6 +2,7 @@ const fs = require("fs");
 const jsdom = require('jsdom');
 const jQuery = require("jquery");
 const mkdirp = require('mkdirp');
+const https = require('https');
 
 // 创建目录
 const mkdir = (dir) => {
@@ -25,10 +26,28 @@ const writeTemplate = ({ dist, html }) => {
     });
 };
 
-
-// let resultObj = {};
-// const textClean = ($t) => $t.text().replace(/\r|\n|\s|（|、|case|demo|）/ig, '');
-// const textLightClean = ($t) => $t.text().replace(/\r|\n|\s|（|、|）/ig, '');
+const saveImg = ({ src, dist }) => {
+    if (src) {
+        https.get(src, function (res) {
+            res.setEncoding('binary');//二进制（binary）
+            var imageData = '';
+            res
+                .on('data', function (data) {//图片加载到内存变量
+                    imageData += data;
+                })
+                .on('end', function () {//加载完毕保存图片
+                    fs.writeFile(dist, imageData, 'binary', function (err) {//以二进制格式保存
+                        if (err) throw err;
+                        console.log('saveImg ==> file saved');
+                    });
+                });
+        }).on('error', function (e) {
+            console.log("saveImg ==> Got error: " + e.message);
+        });
+    } else {
+        console.log('saveImg ==> need config!!!', src);
+    }
+};
 
 const targetArray = [
     'https://mp.weixin.qq.com/s/4IfCETREWz8kZX-S8fvxew',
@@ -37,7 +56,16 @@ const targetArray = [
 
 const catchCase = ({ href, dist, dir, i }) => {
     console.log('run ==> catchCase: ', { href, i, dist, dir });
+
+    /**
+     * { href: 'https://mp.weixin.qq.com/s?__biz=MzIxNDEzMjQwNw==&mid=2648957851&idx=1&sn=9d77b7cfcfe2594de8eb05a2c7309e0f&scene=21#wechat_redirect',
+         i: 0,
+         dist: './src/casefile0/case0/index.html',
+         dir: './src/casefile0/case0' }
+     */
+
     mkdir(dir);
+    mkdir(dir + '/img');
 
     jsdom.env(
         href,
@@ -51,9 +79,26 @@ const catchCase = ({ href, dist, dir, i }) => {
 
             const $script = $('html').find('script');
             $script.remove();
+            let js_contentHTML = $('#js_content').html();
 
-            console.log($('svg').length);
+            let imgIndex = 0;
 
+            js_contentHTML = js_contentHTML.replace(/(&quot;|")(http(s)?:\/\/)([\s\S]*?)?(&quot;|")/gim, function (...e) {
+                if (e[4] && /www\.w3\.org/i.test(e[4]) == false) {
+                    imgIndex++;
+
+                    const imgSrc = e[2] + e[4];
+
+                    saveImg({
+                        src: imgSrc,
+                        dist: `${dir}/img/jpe${imgIndex}.jpeg`
+                    });
+
+                    return `./img/jpe${imgIndex}.jpeg`;
+                }
+            });
+
+            // console.log('js_contentHTML:', js_contentHTML);
 
             writeTemplate({
                 dist: dist,
@@ -70,12 +115,13 @@ const catchCase = ({ href, dist, dir, i }) => {
                                 ${$('#activity-name').text()}
                             </h2>
                             <div id="js_content">
-                                ${$('#js_content').html()}
+                                ${js_contentHTML}
                             </div>
                         </body>
                     </html>
                     `,
             });
+
         }
     );
 };
