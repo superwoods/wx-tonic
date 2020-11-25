@@ -113,7 +113,7 @@ const catchCase = ({ href, dist, dir, i }) => {
 
             let imgIndex = 0;
 
-            js_contentHTML = js_contentHTML.replace(/(&quot;|")(http(s)?:\/\/)([\s\S]*?)?(&quot;|")/gim, function (...e) {
+            js_contentHTML = js_contentHTML.replace(/(\(|&quot;|")(http(s)?:\/\/)([\s\S]*?)?(&quot;|"|\))/gm, function (...e) {
                 const type = e[4].split('wx_fmt=')[1] || 'png';
 
                 console.log('type:', type);
