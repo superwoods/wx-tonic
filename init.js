@@ -1,59 +1,32 @@
 const fs = require("fs");
 const jsdom = require('jsdom');
 const jQuery = require("jquery");
-// const dateFormat = require('dateformat');
+const mkdirp = require('mkdirp');
 
-// console.log('__dirname : ' + __dirname);
-
-// let files = __dirname + '/index.html';
-
-/**
-let files = 'https://mp.weixin.qq.com/s?__biz=MzI0Mjg5MDEwMw==&amp;mid=2247484516&amp;amp;idx=1&amp;amp;sn=20d1aa9208fa7a125fedbde79154d41b&amp;source=41&amp;scene=21#wechat_redirect';
-
-fs.readFile(files, 'utf-8', function (err, callbackData) {
-    if (err) {
-        console.error('/lib/index.js readFile err:\n', err);
-        return;
-    }
-
-    jsdom.env(
-        callbackData,
-        (err, window) => {
-            if (err) {
-                console.error('jsdom err:\n', err);
-                return;
-            }
-            const $ = jQuery(window);
-
-            let $spans = $('body').find('[style="max-width: 100%;font-size: 14px;letter-spacing: 0.5px;font-family: Optima-Regular, PingFangTC-light;box-sizing: border-box !important;overflow-wrap: break-word !important;"]');
-
-            console.log('$spans: ', $spans.length);
-
-            let resultObj = {};
-
-            $spans.each((i, e) => {
-                let $e = $(e);
-                // if (i == 200) console.log($e.text());
-                if ($.trim($e.text())) {
-                    resultObj[$e.text()] = {
-                        'index': i,
-                        'lists': {
-
-                        }
-                    };
-                }
-            });
-
-            console.log(resultObj);
-
+// 创建目录
+const mkdir = (dir) => {
+    mkdirp(dir, function (err) {
+        if (err) {
+            console.error('mkdirp err:', err);
+            return;
         }
-    );
-});
- */
+    });
+};
+
+const writeTemplate = ({ dist, html }) => {
+    console.log('\nrun ==> writeTemplate()');
+    fs.writeFile(dist, html, 'utf-8', function (err) {
+        if (err) {
+            console.error('writeTemplate err:', err);
+            return;
+        }
+        // console.log('\nwriteTemplate: \n', html);
+        console.log('\n   dist:', dist);
+    });
+};
 
 
-
-let resultObj = {};
+// let resultObj = {};
 // const textClean = ($t) => $t.text().replace(/\r|\n|\s|（|、|case|demo|）/ig, '');
 // const textLightClean = ($t) => $t.text().replace(/\r|\n|\s|（|、|）/ig, '');
 
@@ -62,12 +35,60 @@ const targetArray = [
     // 'https://mp.weixin.qq.com/s/gHnDoiVCZ_3PkAJfWbfC8A',
 ];
 
+const catchCase = ({ href, dist, dir, i }) => {
+    console.log('run ==> catchCase: ', { href, i, dist, dir });
+    mkdir(dir);
+
+    jsdom.env(
+        href,
+        ["http://code.jquery.com/jquery.js"],
+        (err, window) => {
+            if (err) {
+                console.error('jsdom err:\n', err);
+                return;
+            }
+            const $ = jQuery(window);
+
+            const $script = $('html').find('script');
+            $script.remove();
+
+            console.log($('svg').length);
+
+
+            writeTemplate({
+                dist: dist,
+                html: `
+                    <!DOCTYPE html>
+                    <html>
+                        <head>
+                            <title>
+                               case${i}_${$('#activity-name').text()}
+                            </title>
+                        </head>
+                        <body>
+                            <h2>
+                                ${$('#activity-name').text()}
+                            </h2>
+                            <div id="js_content">
+                                ${$('#js_content').html()}
+                            </div>
+                        </body>
+                    </html>
+                    `,
+            });
+        }
+    );
+};
+
+
 const jsdomFn = (targetArray) => {
+    console.log('run ==> jsdomFn: ', targetArray);
 
     targetArray.map((src, i) => {
         // console.log(src, i);
-        let file1 = `/${i}`;
-        console.log('file1:', file1);
+        let file1 = `./src/casefile${i}`;
+        const caseIndex = `${file1}/index.html`;
+        mkdir(file1);
 
         jsdom.env(
             src,
@@ -77,10 +98,7 @@ const jsdomFn = (targetArray) => {
                     console.error('jsdom err:\n', err);
                     return;
                 }
-
                 const $ = jQuery(window);
-                let dom = '';
-
 
                 const $script = $('html').find('script');
                 $script.remove();
@@ -91,82 +109,53 @@ const jsdomFn = (targetArray) => {
 
                 $a.each((i, e) => {
                     const $e = $(e);
+                    const href = $e.attr('href');
+
                     $e
                         .addClass('is-changed')
-                        .attr('data-href', $e.attr('href'))
-                        .attr('href', `${file1}/case${i}/case${i}.html`)
+                        .attr('data-href', href)
+                        .attr('href', `./case${i}/index.html`)
                         .attr('target', '_self');
+
+                    if (i < 2) {
+                        catchCase({
+                            href: href,
+                            dist: `${file1}/case${i}/index.html`,
+                            dir: `${file1}/case${i}`,
+                            i: i,
+                        });
+                    }
                 });
 
 
-                console.log($('html').prop('outerHTML'));
-
-
-                // let $spans = $('html').find('svg');
-
-                // console.log('$spans: ', $spans);
-
-
-                // let resultObj = {};
-
-                // $spans.each((i, e) => {
-                //     let $e = $(e);
-                //     // if (i == 200) console.log($e.text());
-                //     if ($.trim($e.text())) {
-                //         resultObj[$e.text()] = {
-                //             'index': i,
-                //             'lists': {
-
-                //             }
-                //         };
-                //     }
-                // });
-                // console.log(resultObj);
+                writeTemplate({
+                    dist: caseIndex,
+                    // html: '<!DOCTYPE html>\n' + $('html').prop('outerHTML'),
+                    html: `
+                    <!DOCTYPE html>
+                    <html>
+                        <head>
+                            <title>
+                                ${$('title').text()}
+                            </title>
+                        </head>
+                        <body>
+                            <h2>
+                                ${$('#activity-name').text()}
+                            </h2>
+                            <div id="js_content">
+                            ${$('#js_content').html()}
+                            </div>
+                        </body>
+                    </html>
+                    `,
+                });
             }
         );
     });
-
-
-
-}
+};
 
 
 if (targetArray && targetArray.length) {
     jsdomFn(targetArray);
 }
-
-
-
-// jsdom.env(
-//     files,
-//     ["http://code.jquery.com/jquery.js"],
-//     (err, window) => {
-//         if (err) {
-//             console.error('jsdom err:\n', err);
-//             return;
-//         }
-
-//         const $ = jQuery(window);
-
-//         let $spans = $('html').find('svg');
-
-//         console.log('$spans: ', $spans);
-
-
-//         // let resultObj = {};
-
-//         // $spans.each((i, e) => {
-//         //     let $e = $(e);
-//         //     // if (i == 200) console.log($e.text());
-//         //     if ($.trim($e.text())) {
-//         //         resultObj[$e.text()] = {
-//         //             'index': i,
-//         //             'lists': {
-
-//         //             }
-//         //         };
-//         //     }
-//         // });
-//         // console.log(resultObj);
-//     }
-// );
