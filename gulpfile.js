@@ -1137,24 +1137,34 @@ gulp.task('show end tips:', function (params) {
     console.log('[' + `${now}`.input + ']' + `\nGulp Finish build ==//==>`.green + ` ${pkg.name}`.grey + ` Build v${pkg.version}`.error);
 });
 
+gulp.task('copy-src', function () {
+    return gulp.src('src/**/*')
+        .pipe(gulp.dest('dist'));
+});
+
+// gulp.copy=function(src,dest){
+//     return gulp.src(src, {base:"."})
+//         .pipe(gulp.dest(dest));
+// };
+
 gulp.task('build', [
-    `qndj`,
-    `pages`,
-    `homepage`,
-    `s4`,
-    `long-pic`,
-    `build_content`,
-    `built_ej_footer_max_js`,
-    'built_wx-share',
-    'built_css_rzjg',
-    'build_iframe_news1',
-    'xat-homepage',
-    'built_lhr_xl_v1_css',
-    'built ej-topfooter-v1.css',
-    'built xa-yw-er.css',
-    'built_s4_index_js',
-    'built_service_page',
-    'built js: homepage-config.js',
-    'built_css/common.css',
-    'show end tips:'
+    // `copy-src`,
+    // `pages`,
+    // `homepage`,
+    // `s4`,
+    // `long-pic`,
+    // `build_content`,
+    // `built_ej_footer_max_js`,
+    // 'built_wx-share',
+    // 'built_css_rzjg',
+    // 'build_iframe_news1',
+    // 'xat-homepage',
+    // 'built_lhr_xl_v1_css',
+    // 'built ej-topfooter-v1.css',
+    // 'built xa-yw-er.css',
+    // 'built_s4_index_js',
+    // 'built_service_page',
+    // 'built js: homepage-config.js',
+    // 'built_css/common.css',
+    // 'show end tips:'
 ]);
