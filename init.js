@@ -22,6 +22,7 @@ colors.setTheme({
     'catchCaseValue2': 'yellow',
 });
 
+
 // 创建目录
 const mkdir = (dir) => {
     mkdirp(dir, function (err) {
@@ -32,76 +33,64 @@ const mkdir = (dir) => {
     });
 };
 
-const writeTemplate = ({ dist, $html }) => {
+const writeTemplate = ({ dist, $html, catchCaseConfig }) => {
     const string = `
         <!DOCTYPE html>
         ${$html.prop('outerHTML')}
     `;
 
     fs.writeFile(dist, string, 'utf-8', function (err) {
-        if (err) {
-            console.error('\n writeTemplate err:', err);
-            return;
-        }
+
         console.log('\n dist:'.green, dist);
         console.log('\n-------------------'.gray);
+
+        if (err) {
+            console.error('\n\n---------------------------------------------\n'.gray);
+            console.error('\n        writeTemplate err:\n'.error, err);
+            console.error('\n          catchCaseConfig:\n'.error, catchCaseConfig);
+            console.error('\n---------------------------------------------\n\n'.gray);
+            return;
+        }
     });
 
     console.log('\n------------------- RUN writeTemplate() -------------------'.gray);
 };
 
-const saveImgHttps = ({ src, dist }) => {
-    if (src) {
-        // console.log(src);
-        https.get(src, function (res) {
-            res.setEncoding('binary');//二进制（binary）
-            var imageData = '';
-            res
-                .on('data', function (data) {//图片加载到内存变量
-                    imageData += data;
-                })
-                .on('end', function () {//加载完毕保存图片
-                    fs.writeFile(dist, imageData, 'binary', function (err) {//以二进制格式保存
-                        console.log(`\n====== saveImgHttps ======`.yellow);
-                        console.log(' dist:'.green, `${dist}`.red);
-                        console.log('saved:'.green, `${src}`.cyan);
-                        if (err) throw err;
-                    });
-                });
-        }).on('error', function (e) {
-            console.log("saveImg Got error: ", e.message, src);
-        });
-    } else {
-        console.log('saveImg need config!!!', src);
+const savePic = ({ src, dist, catchCaseConfig, isHttp }) => {
+    let reqObj = https;
+
+    if (isHttp) {
+        reqObj = http;
     }
+
+    reqObj.get(src, function (res) {
+        res.setEncoding('binary');//二进制（binary）
+        var imageData = '';
+        res
+            .on('data', function (data) {//图片加载到内存变量
+                imageData += data;
+            })
+            .on('end', function () {//加载完毕保存图片
+                fs.writeFile(dist, imageData, 'binary', function (err) {//以二进制格式保存
+                    console.log(`\n====== http${isHttp ? '' : 'SSSSSSSSS'} ======`.yellow);
+                    console.log(' dist:'.green, `${dist}`.red);
+                    console.log('saved:'.green, `${src}`.cyan);
+                    if (err) throw err;
+                });
+            });
+    }).on('error', function (e) {
+
+        console.error('\n\n--------------- savePic Got error ----------------\n'.gray);
+        console.error(e);
+        console.error(catchCaseConfig);
+        console.error(src);
+        console.error('\n---------------------------------------------\n\n'.gray);
+
+        // console.log("saveImg Got error: ".error, e.message, src);
+    });
+
 };
 
-
-const saveImgHttp = ({ src, dist }) => {
-    if (src) {
-        // console.log('http:', src);
-        http.get(src, function (res) {
-            res.setEncoding('binary');//二进制（binary）
-            var imageData = '';
-            res
-                .on('data', function (data) {//图片加载到内存变量
-                    imageData += data;
-                })
-                .on('end', function () {//加载完毕保存图片
-                    fs.writeFile(dist, imageData, 'binary', function (err) {//以二进制格式保存
-                        if (err) throw err;
-                        console.log(`\n------ saveImgHttp --------`.gray);
-                        console.log(' dist:'.green, `${dist}`.red);
-                        console.log('saved:'.green, `${src}`.cyan);
-                    });
-                });
-        }).on('error', function (e) {
-            console.log("saveImg Got error: ", e.message, src);
-        });
-    } else {
-        console.log('saveImg need config!!!', src);
-    }
-};
 
 const targetArray = [
     'https://mp.weixin.qq.com/s/4IfCETREWz8kZX-S8fvxew',
@@ -110,6 +99,8 @@ const targetArray = [
 
 const catchCase = ({ href, dist, dir, i }) => {
     console.log('run ==> catchCase: \n'.red, { href, i, dist, dir });
+
+    const catchCaseConfig = { href, i, dist, dir };
 
     /**
      * { href: 'https://mp.weixin.qq.com/s?__biz=MzIxNDEzMjQwNw==&mid=2648957851&idx=1&sn=9d77b7cfcfe2594de8eb05a2c7309e0f&scene=21#wechat_redirect',
@@ -159,21 +150,15 @@ const catchCase = ({ href, dist, dir, i }) => {
                 // console.log('   e:', e[2]);
 
                 if (type && e[4].length > 0 && /www\.w3\.org/i.test(e[4]) == false) {
-                    if (e[3]) {
-                        imgIndex++;
-                        saveImgHttps({
-                            src: e[2] + e[4],
-                            dist: `${dir}/img/img${imgIndex}.` + type
-                        });
-                        return `./img/img${imgIndex}.` + type;
-                    } else {
-                        imgIndex++;
-                        saveImgHttp({
-                            src: e[2] + e[4],
-                            dist: `${dir}/img/img${imgIndex}.` + type
-                        });
-                        return `./img/img${imgIndex}.` + type;
-                    }
+                    const isHttp = e[3] ? false : true;
+                    imgIndex++;
+                    savePic({
+                        src: e[2] + e[4],
+                        dist: `${dir}/img/img${imgIndex}.` + type,
+                        catchCaseConfig,
+                        isHttp,
+                    });
+                    return `./img/img${imgIndex}.` + type;
                 } else {
                     return e[0];
                 }
@@ -189,6 +174,7 @@ const catchCase = ({ href, dist, dir, i }) => {
             writeTemplate({ // 写入 case
                 'dist': dist,
                 '$html': $('html'),
+                catchCaseConfig,
             });
 
         }
@@ -231,7 +217,7 @@ const jsdomFn = (targetArray) => {
                         .attr('href', `./case${i}/index.html`)
                         .attr('target', '_self');
 
-                    if (i == 4) { // is-dev: max = 2
+                    if (i == 4 || true) { // dev: max = 2
                         catchCase({
                             href: href,
                             dist: `${file1}/case${i}/index.html`,
