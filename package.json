@@ -59,10 +59,7 @@
         "xmeter": "^6.2.0"
     },
     "scripts": {
-        "server": "node ./bin/www",
-        "prestart": "rm -rf file-cms-template & rm -rf file-upload && mkdir -p file-cms-template & mkdir -p file-upload",
-        "start": "PORT=9999 npm run server & wait\n# ============= dev server =============\n# 10.200.1.38:9999",
-        "start2": "gulp",
-        "build": "gulp build"
+        "catch": "node init.js",
+        "server": "gulp"
     }
 }
