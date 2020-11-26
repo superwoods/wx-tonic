@@ -4,6 +4,20 @@ const jQuery = require("jquery");
 const mkdirp = require('mkdirp');
 const https = require('https');
 const http = require('http');
+const colors = require('colors');
+
+colors.setTheme({
+    silly: 'rainbow',
+    input: 'grey',
+    verbose: 'cyan',
+    prompt: 'grey',
+    info: 'green',
+    data: 'grey',
+    help: 'cyan',
+    warn: 'yellow',
+    debug: 'blue',
+    error: 'red'
+});
 
 // 创建目录
 const mkdir = (dir) => {
@@ -153,8 +167,12 @@ const catchCase = ({ href, dist, dir, i }) => {
                 }
             });
 
-            $('#js_content').html(js_contentHTML);
+            $('#js_content').html(js_contentHTML).attr('style', '');
 
+            $('body').append(`
+                <script src="/jq.js"></script>
+                <script src="/set-page.js"></script>
+            `);
 
             writeTemplate({ // 写入 case
                 'dist': dist,
