@@ -196,8 +196,8 @@ const jsdomFn = (targetArray) => {
                 }
                 const $ = jQuery(window);
 
-                const $script = $('html').find('script');
-                $script.remove();
+                // const $script = $('html').find('script');
+                // $script.remove();
 
                 const $a = $('#js_content').find('a');
 
