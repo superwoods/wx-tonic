@@ -8,5 +8,9 @@ $(() => {
         }
     });
 
+
     console.log($imgs.length);
+
+
+    $('#js_content').attr('style', '');
 });
