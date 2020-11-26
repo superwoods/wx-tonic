@@ -59,8 +59,8 @@
         "xmeter": "^6.2.0"
     },
     "scripts": {
-        "prestart": "rm -rf src && mkdir -p src",
-        "start": "node init.js",
+        "precatch": "rm -rf src && mkdir -p src",
+        "catch": "node init.js",
         "server": "gulp"
     }
 }

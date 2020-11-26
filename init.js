@@ -15,9 +15,15 @@ const mkdir = (dir) => {
     });
 };
 
-const writeTemplate = ({ dist, html }) => {
+const writeTemplate = ({ dist, $html }) => {
     console.log('\nrun ==> writeTemplate()');
-    fs.writeFile(dist, html, 'utf-8', function (err) {
+
+    const string = `
+        <!DOCTYPE html>
+        ${$html.prop('outerHTML')}
+    `;
+
+    fs.writeFile(dist, string, 'utf-8', function (err) {
         if (err) {
             console.error('writeTemplate err:', err);
             return;
@@ -40,9 +46,9 @@ const saveImgHttps = ({ src, dist }) => {
                 })
                 .on('end', function () {//加载完毕保存图片
                     fs.writeFile(dist, imageData, 'binary', function (err) {//以二进制格式保存
-                        if (err) throw err;
-                        console.log('saved:', dist);
+                        console.log(' dist:', dist);
                         console.log('saved:', src);
+                        if (err) throw err;
                     });
                 });
         }).on('error', function (e) {
@@ -147,29 +153,12 @@ const catchCase = ({ href, dist, dir, i }) => {
                 }
             });
 
-            console.log('js_contentHTML:', js_contentHTML);
+            $('#js_content').html(js_contentHTML);
+
 
             writeTemplate({ // 写入 case
-                dist: dist,
-                html: `
-                    <!DOCTYPE html>
-                    <html>
-                        <head>
-                            <title>
-                               case${i}_${$('#activity-name').text()}
-                            </title>
-                        </head>
-                        <body>
-                            <a href="${href}" target="_blank">原地址</a>
-                            <h2>
-                                ${$('#activity-name').text()}
-                            </h2>
-                            <div id="js_content">
-                                ${js_contentHTML}
-                            </div>
-                        </body>
-                    </html>
-                    `,
+                'dist': dist,
+                '$html': $('html'),
             });
 
         }
@@ -224,28 +213,34 @@ const jsdomFn = (targetArray) => {
                 });
 
 
-                writeTemplate({
-                    dist: caseIndex,
-                    // html: '<!DOCTYPE html>\n' + $('html').prop('outerHTML'),
-                    html: `
-                    <!DOCTYPE html>
-                    <html>
-                        <head>
-                            <title>
-                                ${$('title').text()}
-                            </title>
-                        </head>
-                        <body>
-                            <h2>
-                                ${$('#activity-name').text()}
-                            </h2>
-                            <div id="js_content">
-                                ${$('#js_content').html()}
-                            </div>
-                        </body>
-                    </html>
-                    `,
+                // writeTemplate({
+                //     dist: caseIndex,
+                //     // html: '<!DOCTYPE html>\n' + $('html').prop('outerHTML'),
+                //     html: `
+                //         <!DOCTYPE html>
+                //         <html>
+                //             <head>
+                //                 <title>
+                //                     ${$('title').text()}
+                //                 </title>
+                //             </head>
+                //             <body>
+                //                 <h2>
+                //                     ${$('#activity-name').text()}
+                //                 </h2>
+                //                 <div id="js_content">
+                //                     ${$('#js_content').html()}
+                //                 </div>
+                //             </body>
+                //         </html>
+                //     `,
+                // });
+
+                writeTemplate({ // 写入 case
+                    'dist': caseIndex,
+                    '$html': $('html'),
                 });
+
             }
         );
     });
