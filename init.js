@@ -16,7 +16,10 @@ colors.setTheme({
     help: 'cyan',
     warn: 'yellow',
     debug: 'blue',
-    error: 'red'
+    error: 'red',
+    'catchCaseTitle': 'green',
+    'catchCaseValue': 'cyan',
+    'catchCaseValue2': 'yellow',
 });
 
 // 创建目录
@@ -30,8 +33,6 @@ const mkdir = (dir) => {
 };
 
 const writeTemplate = ({ dist, $html }) => {
-    console.log('\nrun ==> writeTemplate()');
-
     const string = `
         <!DOCTYPE html>
         ${$html.prop('outerHTML')}
@@ -39,18 +40,19 @@ const writeTemplate = ({ dist, $html }) => {
 
     fs.writeFile(dist, string, 'utf-8', function (err) {
         if (err) {
-            console.error('writeTemplate err:', err);
+            console.error('\n writeTemplate err:', err);
             return;
         }
-        console.log('\n   dist:', dist);
+        console.log('\n dist:'.green, dist);
+        console.log('\n-------------------'.gray);
     });
+
+    console.log('\n------------------- RUN writeTemplate() -------------------'.gray);
 };
 
 const saveImgHttps = ({ src, dist }) => {
     if (src) {
-
-        console.log(src);
-
+        // console.log(src);
         https.get(src, function (res) {
             res.setEncoding('binary');//二进制（binary）
             var imageData = '';
@@ -60,8 +62,9 @@ const saveImgHttps = ({ src, dist }) => {
                 })
                 .on('end', function () {//加载完毕保存图片
                     fs.writeFile(dist, imageData, 'binary', function (err) {//以二进制格式保存
-                        console.log(' dist:', dist);
-                        console.log('saved:', src);
+                        console.log(`\n====== saveImgHttps ======`.yellow);
+                        console.log(' dist:'.green, `${dist}`.red);
+                        console.log('saved:'.green, `${src}`.cyan);
                         if (err) throw err;
                     });
                 });
@@ -76,7 +79,7 @@ const saveImgHttps = ({ src, dist }) => {
 
 const saveImgHttp = ({ src, dist }) => {
     if (src) {
-        console.log('http:', src);
+        // console.log('http:', src);
         http.get(src, function (res) {
             res.setEncoding('binary');//二进制（binary）
             var imageData = '';
@@ -87,8 +90,9 @@ const saveImgHttp = ({ src, dist }) => {
                 .on('end', function () {//加载完毕保存图片
                     fs.writeFile(dist, imageData, 'binary', function (err) {//以二进制格式保存
                         if (err) throw err;
-                        console.log('saved:', dist);
-                        console.log('saved:', src);
+                        console.log(`\n------ saveImgHttp --------`.gray);
+                        console.log(' dist:'.green, `${dist}`.red);
+                        console.log('saved:'.green, `${src}`.cyan);
                     });
                 });
         }).on('error', function (e) {
@@ -105,7 +109,7 @@ const targetArray = [
 ];
 
 const catchCase = ({ href, dist, dir, i }) => {
-    console.log('run ==> catchCase: ', { href, i, dist, dir });
+    console.log('run ==> catchCase: \n'.red, { href, i, dist, dir });
 
     /**
      * { href: 'https://mp.weixin.qq.com/s?__biz=MzIxNDEzMjQwNw==&mid=2648957851&idx=1&sn=9d77b7cfcfe2594de8eb05a2c7309e0f&scene=21#wechat_redirect',
@@ -134,26 +138,34 @@ const catchCase = ({ href, dist, dir, i }) => {
             let imgIndex = 0;
 
             js_contentHTML = js_contentHTML.replace(/(\(|&quot;|")(http(s)?:\/\/)([\s\S]*?)?(&quot;|"|\))/gm, function (...e) {
+                /**
+                 * (\(|&quot;|") (http(s)?:\/\/) ([\s\S]*?)? (&quot;|"|\) )
+                 * (    1      ) ( 2  (3)      ) (   4    )  (     5      ) = 0
+                 */
+
                 const type = e[4].split('wx_fmt=')[1] || 'png';
 
-                console.log('type:', type);
-                console.log('e[0]:', e[0]);
-                console.log('e[2]:', /https/i.test(e[2]), e[2]);
-                console.log('e[4]:', e[4].length);
-                console.log('   3:', /www\.w3\.org/i.test(e[4]) == false, '\n----\n');
+                console.log('type:'.catchCaseTitle, `${type}`.catchCaseValue);
+                console.log('e[0]:'.catchCaseTitle, `${e[0]}`.catchCaseValue2);
+                // console.log('e[1]:'.catchCaseTitle, `${e[1]}`.catchCaseValue);
+                // console.log('e[2]:'.catchCaseTitle, `${e[2]}`.catchCaseValue2);
+                // console.log('e[3]:'.catchCaseTitle, `${e[3]}`.catchCaseValue);
+                // console.log('e[4]:'.catchCaseTitle, `${e[4]}`.catchCaseValue2);
+
+
+                // console.log('e[4]:'.catchCaseTitle, `${e[4].length}`.catchCaseValue);
+                // console.log('   3:'.catchCaseTitle, /www\.w3\.org/i.test(e[4]) == false);
+                console.log('------------------------\n'.gray);
                 // console.log('   e:', e[2]);
 
                 if (type && e[4].length > 0 && /www\.w3\.org/i.test(e[4]) == false) {
-                    if (/https/i.test(e[2])) {
-                        // console.log("e[2] == 'https://':", e[2] == 'https://');
+                    if (e[3]) {
                         imgIndex++;
                         saveImgHttps({
                             src: e[2] + e[4],
                             dist: `${dir}/img/img${imgIndex}.` + type
                         });
-
                         return `./img/img${imgIndex}.` + type;
-
                     } else {
                         imgIndex++;
                         saveImgHttp({
@@ -185,12 +197,15 @@ const catchCase = ({ href, dist, dir, i }) => {
 
 
 const jsdomFn = (targetArray) => {
-    console.log('run ==> jsdomFn: ', targetArray);
+    console.log('run ==> jsdomFn: \n'.red, targetArray);
 
     targetArray.map((src, i) => {
         // console.log(src, i);
+
         let file1 = `./src/casefile${i}`;
+
         const caseIndex = `${file1}/index.html`;
+
         mkdir(file1);
 
         jsdom.env(
@@ -201,14 +216,10 @@ const jsdomFn = (targetArray) => {
                     console.error('jsdom err:\n', err);
                     return;
                 }
+
                 const $ = jQuery(window);
 
-                // const $script = $('html').find('script');
-                // $script.remove();
-
                 const $a = $('#js_content').find('a');
-
-                // console.log($a.length);
 
                 $a.each((i, e) => {
                     const $e = $(e);
@@ -230,40 +241,14 @@ const jsdomFn = (targetArray) => {
                     }
                 });
 
-
-                // writeTemplate({
-                //     dist: caseIndex,
-                //     // html: '<!DOCTYPE html>\n' + $('html').prop('outerHTML'),
-                //     html: `
-                //         <!DOCTYPE html>
-                //         <html>
-                //             <head>
-                //                 <title>
-                //                     ${$('title').text()}
-                //                 </title>
-                //             </head>
-                //             <body>
-                //                 <h2>
-                //                     ${$('#activity-name').text()}
-                //                 </h2>
-                //                 <div id="js_content">
-                //                     ${$('#js_content').html()}
-                //                 </div>
-                //             </body>
-                //         </html>
-                //     `,
-                // });
-
                 writeTemplate({ // 写入 case
                     'dist': caseIndex,
                     '$html': $('html'),
                 });
-
             }
         );
     });
 };
-
 
 if (targetArray && targetArray.length) {
     jsdomFn(targetArray);
