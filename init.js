@@ -6,6 +6,7 @@ const https = require('https');
 const http = require('http');
 const colors = require('colors');
 
+
 colors.setTheme({
     silly: 'rainbow',
     input: 'grey',
@@ -138,7 +139,13 @@ const catchCase = ({ href, dist, dir, i }) => {
                      * (    1      ) ( 2  (3)      ) (   4    )  (     5      ) = 0
                      */
 
-                    const type = e[4].split('wx_fmt=')[1] || 'png';
+                    const type = (() => {
+                        let e41 = e[4].split('wx_fmt=')[1];
+                        if (/&/.test(e41)) {
+                            e41 = e41.split('&')[0];
+                        }
+                        return e41 || 'png';
+                    })();
 
                     console.log('type:'.catchCaseTitle, `${type}`.catchCaseValue);
                     console.log('e[0]:'.catchCaseTitle, `${e[0]}`.catchCaseValue2);
@@ -197,8 +204,9 @@ const jsdomFn = (targetArray) => {
     console.log('run ==> jsdomFn: \n'.red, targetArray);
 
     targetArray.map((src, i) => {
-        if (targetArrayIf(i)) {
+        if (i == process.argv[2] || !(process.argv[2])) {
 
+            console.log('  process.argv[2]:', process.argv[2]);
             console.log(src, i);
 
             let file1 = `./src/casefile${i}`;
@@ -234,7 +242,16 @@ const jsdomFn = (targetArray) => {
                             .attr('href', `./case${i}/index.html`)
                             .attr('target', '_self');
 
-                        if (catchCaseIf(i)) { // dev: max = 2
+                        if (
+
+
+                            // i ==
+                            // 119
+                            // false
+                            i == process.argv[3] || !(process.argv[3])
+
+                        ) {
+                            // console.log(i);
                             catchCase({
                                 href: href,
                                 dist: `${file1}/case${i}/index.html`,
@@ -261,11 +278,18 @@ const jsdomFn = (targetArray) => {
 };
 
 
-const targetArrayIf = (i) => i == 1; //|| true
+const targetArrayIf = (i) => i == 1; // casefile 目录页面
 
 
-const catchCaseIf = (i) => i == 1; //|| true
+// const catchCaseIf = (i) => {
+//     return i == 4 || i == 5;
+// }; // case 项目页面
 
 if (targetArray && targetArray.length) {
     jsdomFn(targetArray);
 }
+
+console.log('\n--------------------------');
+console.log('   process:\n', process.argv);
+
+
