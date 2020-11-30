@@ -124,8 +124,8 @@ const catchCase = ({ href, dist, dir, i }) => {
             }
             const $ = jQuery(window);
 
-            // const $script = $('html').find('script');
-            // $script.remove();
+            $('html').find('script').remove();
+            $('.jsdom').remove();
 
             let js_contentHTML = $('#js_content').html();
 
@@ -140,13 +140,9 @@ const catchCase = ({ href, dist, dir, i }) => {
             let imgIndex = 0;
 
             if (js_contentHTML) {
-                // js_contentHTML = js_contentHTML.replace(/(\(|&quot;|")(http(s)?:\/\/)([\s\S]*?)?(&quot;|"|\))/gm, function (...e) {
-                js_contentHTML = js_contentHTML.replace(/[^href=](\(|&quot;|")(http(s)?:\/\/)([\s\S]*?)?(&quot;|"|\))/gm, function (...e) {
+                js_contentHTML = js_contentHTML.replace(/(\(|&quot;|")(http(s)?:\/\/)([\s\S]*?)?(&quot;|"|\))/gm, function (...e) {
 
-                    /**
-                     * (\(|&quot;|") (http(s)?:\/\/) ([\s\S]*?)? (&quot;|"|\) )
-                     * (    1      ) ( 2  (3)      ) (   4    )  (     5      ) = 0
-                     */
+
 
                     let type = (() => {
                         let e41 = e[4].split('wx_fmt=')[1];
@@ -171,12 +167,12 @@ const catchCase = ({ href, dist, dir, i }) => {
                     }
 
 
-                    console.log('type:'.catchCaseTitle, `${type}`.catchCaseValue);
-                    console.log('e[0]:'.catchCaseTitle, `${e[0]}`.catchCaseValue2);
+                    // console.log('type:'.catchCaseTitle, `${type}`.catchCaseValue);
+                    // console.log('e[0]:'.catchCaseTitle, `${e[0]}`.catchCaseValue2);
                     // console.log('e[1]:'.catchCaseTitle, `${e[1]}`.catchCaseValue);
                     // console.log('e[2]:'.catchCaseTitle, `${e[2]}`.catchCaseValue2);
                     // console.log('e[3]:'.catchCaseTitle, `${e[3]}`.catchCaseValue);
-                    // console.log('e[4]:'.catchCaseTitle, `${e[4]}`.catchCaseValue2);
+                    // console.log('e[4]:'.catchCaseTitle, `${e[4]}`.catchCaseValue);
 
 
                     // console.log('e[4]:'.catchCaseTitle, `${e[4].length}`.catchCaseValue);
@@ -203,8 +199,8 @@ const catchCase = ({ href, dist, dir, i }) => {
 
                 $('body')
                     .append(`
-                        <script src="/jq.js"></script>
-                        <script src="/set-page.js"></script>
+                        <script src="../../jq.js"></script>
+                        <script src="../../set-page.js"></script>
                     `);
 
 
@@ -285,14 +281,16 @@ const jsdomFn = (targetArray) => {
                                 dir: `${file1}/case${i}`,
                                 i: i,
                             });
+                        } else {
+                            console.log('no:', process.argv[3]);
                         }
                     });
 
 
                     $('body').append(`
-                    <script src="/jq.js"></script>
-                    <script src="/set-page.js"></script>
-                `);
+                        <script src="../jq.js"></script>
+                        <script src="../set-page.js"></script>
+                    `);
 
                     writeTemplate({ // 写入 case
                         'dist': caseIndex,
