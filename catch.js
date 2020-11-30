@@ -129,23 +129,47 @@ const catchCase = ({ href, dist, dir, i }) => {
 
             let js_contentHTML = $('#js_content').html();
 
+            const $activityName = $('#activity-name');
+            const activityNameText = $activityName.text();
+            $activityName.html(`
+                <a href="${href}" target="_blank">
+                    ${activityNameText}
+                </a>
+            `);
 
             let imgIndex = 0;
 
             if (js_contentHTML) {
-                js_contentHTML = js_contentHTML.replace(/(\(|&quot;|")(http(s)?:\/\/)([\s\S]*?)?(&quot;|"|\))/gm, function (...e) {
+                // js_contentHTML = js_contentHTML.replace(/(\(|&quot;|")(http(s)?:\/\/)([\s\S]*?)?(&quot;|"|\))/gm, function (...e) {
+                js_contentHTML = js_contentHTML.replace(/[^href=](\(|&quot;|")(http(s)?:\/\/)([\s\S]*?)?(&quot;|"|\))/gm, function (...e) {
+
                     /**
                      * (\(|&quot;|") (http(s)?:\/\/) ([\s\S]*?)? (&quot;|"|\) )
                      * (    1      ) ( 2  (3)      ) (   4    )  (     5      ) = 0
                      */
 
-                    const type = (() => {
+                    let type = (() => {
                         let e41 = e[4].split('wx_fmt=')[1];
                         if (/&/.test(e41)) {
                             e41 = e41.split('&')[0];
                         }
                         return e41 || 'png';
                     })();
+
+
+                    if (/gif;/.test(type)) {
+                        type = type.replace('gif;', 'gif');
+                    }
+                    if (/png;/.test(type)) {
+                        type = type.replace('png;', 'png');
+                    }
+                    if (/jpeg;/.test(type)) {
+                        type = type.replace('jpeg;', 'jpeg');
+                    }
+                    if (/jpg;/.test(dist)) {
+                        type = type.replace('jpg;', 'jpg');
+                    }
+
 
                     console.log('type:'.catchCaseTitle, `${type}`.catchCaseValue);
                     console.log('e[0]:'.catchCaseTitle, `${e[0]}`.catchCaseValue2);
@@ -177,10 +201,13 @@ const catchCase = ({ href, dist, dir, i }) => {
 
                 $('#js_content').html(js_contentHTML).attr('style', '');
 
-                $('body').append(`
-                    <script src="/jq.js"></script>
-                    <script src="/set-page.js"></script>
-                `);
+                $('body')
+                    .append(`
+                        <script src="/jq.js"></script>
+                        <script src="/set-page.js"></script>
+                    `);
+
+
             } else {
 
                 console.error('\n\n---------- no js_contentHTML ----------\n'.gray);
