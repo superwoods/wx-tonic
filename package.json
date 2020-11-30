@@ -61,6 +61,6 @@
     "scripts": {
         "catch": "node catch.js",
         "server": "gulp",
-        "dev": "node catch.js 0 15 && node catch.js 0 16 && node catch.js 0 17 && node catch.js 0 18 && node catch.js 0 19 && node catch.js 0 20 && node catch.js 0 21 && node catch.js 0 22 && node catch.js 0 23 && node catch.js 0 24 && node catch.js 0 25"
+        "dev": "node catch.js 0 1"
     }
 }
