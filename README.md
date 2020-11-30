@@ -46,9 +46,11 @@ https://mp.weixin.qq.com/s/gHnDoiVCZ_3PkAJfWbfC8A
 
     > 注意：每个 case 应该包含一个 img/ 一个 index.html，img/ 下应该有 1-x 个页面，img 序号不是从第1个开始或者缺少，请重新抓取！
 
+---
 
+## 一些注意事项
 
-## 启动本地开发服务器，方便查看效果和测试
+### 启动本地开发服务器，方便查看效果和测试
 
 但这是没有任何编译和压缩配置的，gulp 仅仅作为本地开发服务器使用
 
@@ -56,7 +58,7 @@ https://mp.weixin.qq.com/s/gHnDoiVCZ_3PkAJfWbfC8A
 gulp
 ```
 
-## 其他文件
+### 其他文件
 
 set-page.js 和 jq.js 用于修复抓取之后的 case/index.html 因为他们会有不能显示 img 的 bug
 
