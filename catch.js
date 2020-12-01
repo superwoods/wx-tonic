@@ -124,7 +124,7 @@ const catchCase = ({ href, dist, dir, i }) => {
             }
             const $ = jQuery(window);
 
-            $('html').find('script').remove();
+            // $('html').find('script').remove();
             $('.jsdom').remove();
 
             let js_contentHTML = $('#js_content').html();
@@ -177,7 +177,7 @@ const catchCase = ({ href, dist, dir, i }) => {
 
                     // console.log('e[4]:'.catchCaseTitle, `${e[4].length}`.catchCaseValue);
                     // console.log('   3:'.catchCaseTitle, /www\.w3\.org/i.test(e[4]) == false);
-                    console.log('------------------------\n'.gray);
+                    // console.log('------------------------\n'.gray);
                     // console.log('   e:', e[2]);
 
                     if (type && e[4].length > 0 && /www\.w3\.org/i.test(e[4]) == false) {
@@ -281,9 +281,10 @@ const jsdomFn = (targetArray) => {
                                 dir: `${file1}/case${i}`,
                                 i: i,
                             });
-                        } else {
-                            console.log('no:', process.argv[3]);
                         }
+                        // else {
+                        //     console.log('no:', process.argv[3]);
+                        // }
                     });
 
 
