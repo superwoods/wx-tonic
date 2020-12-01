@@ -59,7 +59,8 @@
         "xmeter": "^6.2.0"
     },
     "scripts": {
-        "catch": "node init.js",
-        "server": "gulp"
+        "catch": "node catch.js",
+        "server": "gulp",
+        "dev": "node catch.js 0 1"
     }
 }

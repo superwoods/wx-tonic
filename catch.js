@@ -124,22 +124,27 @@ const catchCase = ({ href, dist, dir, i }) => {
             }
             const $ = jQuery(window);
 
-            // const $script = $('html').find('script');
-            // $script.remove();
+            // $('html').find('script').remove();
+            $('.jsdom').remove();
 
             let js_contentHTML = $('#js_content').html();
 
+            const $activityName = $('#activity-name');
+            const activityNameText = $activityName.text();
+            $activityName.html(`
+                <a href="${href}" target="_blank">
+                    ${activityNameText}
+                </a>
+            `);
 
             let imgIndex = 0;
 
             if (js_contentHTML) {
                 js_contentHTML = js_contentHTML.replace(/(\(|&quot;|")(http(s)?:\/\/)([\s\S]*?)?(&quot;|"|\))/gm, function (...e) {
-                    /**
-                     * (\(|&quot;|") (http(s)?:\/\/) ([\s\S]*?)? (&quot;|"|\) )
-                     * (    1      ) ( 2  (3)      ) (   4    )  (     5      ) = 0
-                     */
 
-                    const type = (() => {
+
+
+                    let type = (() => {
                         let e41 = e[4].split('wx_fmt=')[1];
                         if (/&/.test(e41)) {
                             e41 = e41.split('&')[0];
@@ -147,17 +152,32 @@ const catchCase = ({ href, dist, dir, i }) => {
                         return e41 || 'png';
                     })();
 
-                    console.log('type:'.catchCaseTitle, `${type}`.catchCaseValue);
-                    console.log('e[0]:'.catchCaseTitle, `${e[0]}`.catchCaseValue2);
+
+                    if (/gif;/.test(type)) {
+                        type = type.replace('gif;', 'gif');
+                    }
+                    if (/png;/.test(type)) {
+                        type = type.replace('png;', 'png');
+                    }
+                    if (/jpeg;/.test(type)) {
+                        type = type.replace('jpeg;', 'jpeg');
+                    }
+                    if (/jpg;/.test(dist)) {
+                        type = type.replace('jpg;', 'jpg');
+                    }
+
+
+                    // console.log('type:'.catchCaseTitle, `${type}`.catchCaseValue);
+                    // console.log('e[0]:'.catchCaseTitle, `${e[0]}`.catchCaseValue2);
                     // console.log('e[1]:'.catchCaseTitle, `${e[1]}`.catchCaseValue);
                     // console.log('e[2]:'.catchCaseTitle, `${e[2]}`.catchCaseValue2);
                     // console.log('e[3]:'.catchCaseTitle, `${e[3]}`.catchCaseValue);
-                    // console.log('e[4]:'.catchCaseTitle, `${e[4]}`.catchCaseValue2);
+                    // console.log('e[4]:'.catchCaseTitle, `${e[4]}`.catchCaseValue);
 
 
                     // console.log('e[4]:'.catchCaseTitle, `${e[4].length}`.catchCaseValue);
                     // console.log('   3:'.catchCaseTitle, /www\.w3\.org/i.test(e[4]) == false);
-                    console.log('------------------------\n'.gray);
+                    // console.log('------------------------\n'.gray);
                     // console.log('   e:', e[2]);
 
                     if (type && e[4].length > 0 && /www\.w3\.org/i.test(e[4]) == false) {
@@ -177,10 +197,13 @@ const catchCase = ({ href, dist, dir, i }) => {
 
                 $('#js_content').html(js_contentHTML).attr('style', '');
 
-                $('body').append(`
-                    <script src="/jq.js"></script>
-                    <script src="/set-page.js"></script>
-                `);
+                $('body')
+                    .append(`
+                        <script src="../../jq.js"></script>
+                        <script src="../../set-page.js"></script>
+                    `);
+
+
             } else {
 
                 console.error('\n\n---------- no js_contentHTML ----------\n'.gray);
@@ -259,13 +282,16 @@ const jsdomFn = (targetArray) => {
                                 i: i,
                             });
                         }
+                        // else {
+                        //     console.log('no:', process.argv[3]);
+                        // }
                     });
 
 
                     $('body').append(`
-                    <script src="/jq.js"></script>
-                    <script src="/set-page.js"></script>
-                `);
+                        <script src="../jq.js"></script>
+                        <script src="../set-page.js"></script>
+                    `);
 
                     writeTemplate({ // 写入 case
                         'dist': caseIndex,
