@@ -109,3 +109,4 @@ typings/
 demo/
 bk/
 src/
+*.lock
