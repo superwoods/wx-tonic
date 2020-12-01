@@ -303,14 +303,6 @@ const jsdomFn = (targetArray) => {
     });
 };
 
-
-const targetArrayIf = (i) => i == 1; // casefile 目录页面
-
-
-// const catchCaseIf = (i) => {
-//     return i == 4 || i == 5;
-// }; // case 项目页面
-
 if (targetArray && targetArray.length) {
     jsdomFn(targetArray);
 }
