@@ -1,6 +1,6 @@
 {
     "name": "wx-tonic",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "I realy love Gin&Tonic And I HATE wx!!!",
     "main": "index.js",
     "repository": {
