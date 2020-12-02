@@ -252,6 +252,10 @@ const jsdomFn = (targetArray) => {
                     const $script = $('html').find('script');
                     $script.remove();
 
+                    $('.original_area_primary').remove();
+                    $('span[style="color: rgb(255, 255, 255);max-width: 100%;font-family: Optima-Regular, PingFangTC-light;font-size: 14px;letter-spacing: 1px;background-color: rgb(0, 0, 0);box-sizing: border-box !important;overflow-wrap: break-word !important;"]').remove();
+                    $('#js_toobar3').remove();
+
 
                     const $a = $('#js_content').find('a');
 

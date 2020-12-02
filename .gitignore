@@ -110,3 +110,4 @@ demo/
 bk/
 src/
 *.lock
+outer/
