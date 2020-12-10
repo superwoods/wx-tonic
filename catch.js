@@ -95,13 +95,13 @@ const savePic = ({ src, dist, catchCaseConfig, isHttp }) => {
 
 const targetArray = [
     'https://mp.weixin.qq.com/s/4IfCETREWz8kZX-S8fvxew',
-    'https://mp.weixin.qq.com/s/gHnDoiVCZ_3PkAJfWbfC8A',
+    'https://mp.weixin.qq.com/s/gHnDoiVCZ_3PkAJfWbfC8A', // 1
 ];
 
-const catchCase = ({ href, dist, dir, i }) => {
-    console.log('run ==> catchCase: \n'.red, { href, i, dist, dir });
+const catchCase = ({ href, dist, org, dir, i }) => {
+    console.log('run ==> catchCase: \n'.red, { href, i, dist, dir, org });
 
-    const catchCaseConfig = { href, i, dist, dir };
+    const catchCaseConfig = { href, i, dist, dir, org };
 
     /**
      * { href: 'https://mp.weixin.qq.com/s?__biz=MzIxNDEzMjQwNw==&mid=2648957851&idx=1&sn=9d77b7cfcfe2594de8eb05a2c7309e0f&scene=21#wechat_redirect',
@@ -124,6 +124,12 @@ const catchCase = ({ href, dist, dir, i }) => {
             }
             const $ = jQuery(window);
 
+            writeTemplate({ // 写入 case
+                'dist': org,
+                '$html': $('html'),
+                catchCaseConfig,
+            });
+
             // $('html').find('script').remove();
             $('.jsdom').remove();
 
@@ -140,6 +146,7 @@ const catchCase = ({ href, dist, dir, i }) => {
             let imgIndex = 0;
 
             if (js_contentHTML) {
+                // js_contentHTML = js_contentHTML.replace(/(\(|&quot;|")(http(s)?:\/\/)([\s\S]*?)?(&quot;|"|\))/gm, function (...e) {
                 js_contentHTML = js_contentHTML.replace(/(\(|&quot;|")(http(s)?:\/\/)([\s\S]*?)?(&quot;|"|\))/gm, function (...e) {
 
 
@@ -183,12 +190,14 @@ const catchCase = ({ href, dist, dir, i }) => {
                     if (type && e[4].length > 0 && /www\.w3\.org/i.test(e[4]) == false) {
                         const isHttp = e[3] ? false : true;
                         imgIndex++;
-                        savePic({
-                            src: e[2] + e[4],
-                            dist: `${dir}/img/img${imgIndex}.` + type,
-                            catchCaseConfig,
-                            isHttp,
-                        });
+
+                        // savePic({
+                        //     src: e[2] + e[4],
+                        //     dist: `${dir}/img/img${imgIndex}.` + type,
+                        //     catchCaseConfig,
+                        //     isHttp,
+                        // });
+
                         return `./img/img${imgIndex}.` + type;
                     } else {
                         return e[0];
@@ -199,8 +208,8 @@ const catchCase = ({ href, dist, dir, i }) => {
 
                 $('body')
                     .append(`
-                        <script src="../../jq.js"></script>
-                        <script src="../../set-page.js"></script>
+                        <script src="/jq.js"></script>
+                        <script src="/set-page.js"></script>
                     `);
 
 
@@ -235,6 +244,8 @@ const jsdomFn = (targetArray) => {
             let file1 = `./src/casefile${i}`;
 
             const caseIndex = `${file1}/index.html`;
+            const caseIndexOrg = `${file1}/org.html`;
+
 
             mkdir(file1);
 
@@ -248,6 +259,11 @@ const jsdomFn = (targetArray) => {
                     }
 
                     const $ = jQuery(window);
+
+                    writeTemplate({ // 写入 case
+                        'dist': caseIndexOrg,
+                        '$html': $('html'),
+                    });
 
                     const $script = $('html').find('script');
                     $script.remove();
@@ -282,6 +298,7 @@ const jsdomFn = (targetArray) => {
                             catchCase({
                                 href: href,
                                 dist: `${file1}/case${i}/index.html`,
+                                org: `${file1}/case${i}/org.html`,
                                 dir: `${file1}/case${i}`,
                                 i: i,
                             });
@@ -293,8 +310,8 @@ const jsdomFn = (targetArray) => {
 
 
                     $('body').append(`
-                        <script src="../jq.js"></script>
-                        <script src="../set-page.js"></script>
+                        <script src="./jq.js"></script>
+                        <script src="./set-page.js"></script>
                     `);
 
                     writeTemplate({ // 写入 case
