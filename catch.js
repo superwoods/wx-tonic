@@ -241,7 +241,7 @@ const jsdomFn = (targetArray) => {
             console.log('  process.argv[2]:', process.argv[2]);
             console.log(src, i);
 
-            let file1 = `./src/casefile${i}`;
+            let file1 = `./svgwexin/casefile${i}`;
 
             const caseIndex = `${file1}/index.html`;
             const caseIndexOrg = `${file1}/org.html`;
