@@ -35,6 +35,7 @@ $(() => {
 
     let index = 0;
 
+    // js_contentHTML = js_contentHTML.replace(/(url\()(&quot;|")?((http(s)?:\/\/)([\s\S]*?)?)(png|jpeg|gif|jpg)?(;)?(&quot;|")?(\))/g, function (...e) {
     js_contentHTML = js_contentHTML.replace(/(url\()(&quot;|")?((http(s)?:\/\/)([\s\S]*?)?)(png|jpeg|gif|jpg)?(;)?(&quot;|")?(\))/g, function (...e) {
         index++;
 
