@@ -94,7 +94,7 @@ gulp.task('browsersync', function () {
         ], {
             server: {
                 baseDir: './',
-                https: true,
+                https: false,
             },
             notify: true,
         });
