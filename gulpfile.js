@@ -124,20 +124,20 @@ gulp.task('browsersync', function () {
 
 // watch
 gulp.task('autowatch', function () {
-    gulp.watch('*.html', function () {
+    gulp.watch(['*.html', '*/*.*'], function () {
         browsersync.reload();
     });
-    gulp.watch('local-index.js', function () {
-        browsersync.reload();
-    });
-    gulp.watch('index.js', function () {
-        browsersync.reload();
-    });
+    // gulp.watch('local-index.js', function () {
+    //     browsersync.reload();
+    // });
+    // gulp.watch('index.js', function () {
+    //     browsersync.reload();
+    // });
 });
 
 // gulp run
 gulp.task('default', [
-    // 'autowatch',
+    'autowatch',
     'browsersync'
 ]);
 
