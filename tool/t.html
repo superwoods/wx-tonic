@@ -1,0 +1,23 @@
+
+<div class="box">
+aaa
+
+    </div>
+
+<script src="jq.js"></script>
+<script>
+
+var res = '';
+
+for (let index = 0; index <= 20; index++) {
+    res += `
+<section powered-by="yiwebsite"><svg data-mpa-powered-by="yi.hc" style="display: inline-block;background-position: 0% 0%;background-repeat: no-repeat;background-size: 100%;background-attachment: scroll;background-image: url(images/p5${index%2 == 0 ? '' : 'f'}.jpg);width: 100%;vertical-align: top;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;" version="1.1" viewbox="0 0 800 1120" x="0px" xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" y="0px"> 
+<animate attributename="opacity" data-txscript="ch" begin="click" dur="0.3s" values="1;0" fill="freeze"></animate> 
+<set attributename="visibility" data-txscript="ch" from="visible" to="hidden" begin="click+0.3s"></set></svg></section>
+    `;
+}
+
+$('.box').text(res);
+
+
+</script>
