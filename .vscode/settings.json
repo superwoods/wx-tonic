@@ -1,0 +1,52 @@
+{
+    "window.zoomLevel": 1,
+    "git.confirmSync": false,
+    "markdown.styles": [
+        "https://gitcdn.xyz/repo/aui/vs-code-github-markdown-theme/master/index.css"
+    ],
+    "typescript.check.npmIsInstalled": false,
+    "html.format.indentInnerHtml": false,
+    "workbench.activityBar.visible": false,
+    "workbench.sideBar.location": "left",
+    "files.associations": {
+        //"*.js": "jsx"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    // "react.beautify.onSave": true,
+    // "react.beautify.formatter": "prettydiff",
+    "editor.wordWrap": "on",
+    "[jsx]": {},
+    "files.autoSave": "off",
+    "editor.multiCursorModifier": "alt",
+    "css.lint.idSelector": "warning",
+    "css.lint.float": "warning",
+    // "compilerOptions": {
+    //     "target": "ES6"
+    // },
+    "[stylus]": {},
+    "workbench.colorTheme": "Kimbie Dark",
+    "extensions.autoUpdate": true,
+    "explorer.confirmDragAndDrop": false,
+    "workbench.panel.location": "bottom",
+    "editor.renderControlCharacters": true,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "[jsonc]": {
+        "editor.defaultFormatter": "HookyQR.beautify"
+    },
+    "[html]": {
+
+    },
+    "[vue]": {},
+    "[json]": {
+        "editor.defaultFormatter": "HookyQR.beautify"
+    },
+    "javascript.implicitProjectConfig.experimentalDecorators": true,
+    "css.completion.completePropertyWithSemicolon": false,
+    "task.autoDetect": "off",
+    "vsicons.dontShowNewVersionMessage": true,
+    "explorer.confirmDelete": false,
+    "security.workspace.trust.untrustedFiles": "newWindow",
+    "html.format.enable": false
+}
