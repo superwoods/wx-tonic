@@ -5484,6 +5484,7 @@ img.appmsg_search_card .appmsg_search_avatar {
         color: #7d90a9
     }
     .share_btn:before {
-        background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M18.8 7.2H16V6h3.001c.55 0 .999.446.999.996v13.008a.998.998 0 0 1-.996.996H4.996A.998.998 0 0 1 4 20.004V6.996A1 1 0 0 1 4.999 6H8v1.2H5.2v12.6h13.6V7.2zm-6.2-3.938V12.5h-1.2V3.262L9.313 5.349 8.464 4.5l2.829-2.828a1 1 0 0 1 1.414 0L15.536 4.5l-.849.849L12.6 3.262z' fill='%237d90a9' fill-rule='evenodd'/%3E%3C/svg%3E")
+        background-image: url("data:image/svg+xml;charset=utf8, %3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M18.8 7.2H16V6h3.001c.55 0 .999.446.999.996v13.008a.998.998 0 0 1-.996.996H4.996A.998.998 0 0 1 4 20.004V6.996A1 1 0 0 1 4.999 6H8v1.2H5.2v12.6h13.6V7.2zm-6.2-3.938V12.5h-1.2V3.262L9.313 5.349 8.464 4.5l2.829-2.828a1 1 0 0 1 1.414 0L15.536 4.5l-.849.849L12.6 3.262z' fill='%237d90a9' fill-rule='evenodd'/%3E%3C/svg%3E");
+        
     }
 }
