@@ -270,13 +270,10 @@ const jsdomFn = (targetArray) => {
                             .attr('target', '_self');
 
                         if (
-
-
                             // i ==
                             // 119
                             // false
                             i == process.argv[3] || !(process.argv[3])
-
                         ) {
                             // console.log(i);
                             catchCase({
